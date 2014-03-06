@@ -31,24 +31,35 @@ directory node['solr']['data_dir'] do
   action :create
 end
 
-template '/var/lib/solr.start' do
-  source 'solr.start.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
-  variables(
-    :solr_dir => extract_path,
-    :solr_home => node['solr']['data_dir'],
-    :pid_file => '/var/run/solr.pid',
-    :log_file => '/var/log/solr.log'
-  )
-end
+case node["platform"]
+when "debian", "ubuntu"
+  template "/etc/init/solr.conf" do
+    source "solr.conf.erb"
+    mode 0664
+    owner "root"
+    group "root"
+    notifies :restart, resources(:service => "solr")
+  end
+when "redhat", "centos", "fedora"
+  template '/var/lib/solr.start' do
+    source 'solr.start.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+    variables(
+      :solr_dir => extract_path,
+      :solr_home => node['solr']['data_dir'],
+      :pid_file => '/var/run/solr.pid',
+      :log_file => '/var/log/solr.log'
+    )
+  end
 
-template '/etc/init.d/solr' do
-  source 'initd.erb'
-  owner 'root'
-  group 'root'
-  mode '0755'
+  template '/etc/init.d/solr' do
+    source 'initd.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+  end
 end
 
 service 'solr' do

@@ -1,0 +1,16 @@
+# Service script for the Solr search engine
+
+description     "Service script for the Solr search engine"
+author          "Jens Ulrich Hjuler Pedersen <multiply@juhp.net>"
+version         "0.0.1"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+kill timeout 30
+respawn
+
+script
+    cd <%= @solr_dir %>/example
+    exec /usr/bin/java -Xms128M -Xmx512M -Dsolr.solr.home=<%= @solr_home %> -Djetty.port=8984 -jar start.jar > <%= @log_file %>
+end script
