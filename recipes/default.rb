@@ -9,7 +9,7 @@ include_recipe 'java'
 
 src_filename = ::File.basename(node['solr']['url'])
 src_filepath = "#{Chef::Config['file_cache_path']}/#{src_filename}"
-extract_path = "/opt/solr-#{node['solr']['version']}"
+extract_path = "/opt/solr"
 
 remote_file src_filepath do
   source node['solr']['url']
