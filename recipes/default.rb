@@ -43,6 +43,12 @@ when 'debian', 'ubuntu'
     mode 0664
     owner 'root'
     group 'root'
+    variables(
+      :solr_dir => extract_path,
+      :solr_home => node['solr']['data_dir'],
+      :pid_file => '/var/run/solr.pid',
+      :log_file => '/var/log/solr.log'
+    )
     notifies :restart, resources(:service => 'solr')
   end
 when 'redhat', 'centos', 'fedora'
