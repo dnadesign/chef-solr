@@ -10,6 +10,7 @@ include_recipe 'java'
 src_filename = ::File.basename(node['solr']['url'])
 src_filepath = "#{Chef::Config['file_cache_path']}/#{src_filename}"
 extract_path = "/opt/solr"
+solr_path    = "#{extract_path}/solr-#{node['solr']['version']}"
 
 remote_file src_filepath do
   source node['solr']['url']
@@ -44,7 +45,7 @@ when 'debian', 'ubuntu'
     owner 'root'
     group 'root'
     variables(
-      :solr_dir => extract_path,
+      :solr_dir => solr_path,
       :solr_home => node['solr']['data_dir'],
       :pid_file => '/var/run/solr.pid',
       :log_file => '/var/log/solr.log'
