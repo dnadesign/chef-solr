@@ -31,16 +31,21 @@ directory node['solr']['data_dir'] do
   action :create
 end
 
-case node["platform"]
-when "debian", "ubuntu"
-  template "/etc/init/solr.conf" do
-    source "solr.conf.erb"
-    mode 0664
-    owner "root"
-    group "root"
-    notifies :restart, resources(:service => "solr")
+case node['platform']
+when 'debian', 'ubuntu'
+  service 'solr' do
+    provider Chef::Provider::Service::Upstart
+    supports :start => true, :restart => true, :stop => true
   end
-when "redhat", "centos", "fedora"
+
+  template '/etc/init/solr.conf' do
+    source 'solr.conf.erb'
+    mode 0664
+    owner 'root'
+    group 'root'
+    notifies :restart, resources(:service => 'solr')
+  end
+when 'redhat', 'centos', 'fedora'
   template '/var/lib/solr.start' do
     source 'solr.start.erb'
     owner 'root'
@@ -60,9 +65,9 @@ when "redhat", "centos", "fedora"
     group 'root'
     mode '0755'
   end
-end
 
-service 'solr' do
-  supports :restart => true, :status => true
-  action [:enable, :start]
+  service 'solr' do
+    supports :restart => true, :status => true
+    action [:enable, :start]
+  end
 end
