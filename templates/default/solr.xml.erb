@@ -1,0 +1,9 @@
+<solr persistent="true">
+  <cores adminPath="/admin/cores" defaultCoreName="collection1" host="${host:}"
+         hostPort="${jetty.port:}" hostContext="${hostContext:}"
+         zkClientTimeout="${zkClientTimeout:15000}">
+  <% @collections.sort.each do |collection| -%>
+    <core name="<%= collection %>" instanceDir="<%= collection %>" />
+  <% end -%>
+  </cores>
+</solr>

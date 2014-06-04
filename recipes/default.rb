@@ -78,3 +78,15 @@ when 'redhat', 'centos', 'fedora'
     action [:enable, :start]
   end
 end
+
+template "solr.xml" do
+  path "#{node['solr']['data_dir']}/solr.xml"
+  owner 'root'
+  group 'root'
+  source 'solr.xml.erb'
+  cookbook 'solr'
+  variables(
+    :collections => Array(node['solr']['collections'])
+  )
+  notifies :restart, resources(:service => 'solr')
+end
