@@ -88,5 +88,6 @@ template "solr.xml" do
   variables(
     :collections => Array(node['solr']['collections'])
   )
+  action :create_if_missing
   notifies :restart, resources(:service => 'solr')
 end
